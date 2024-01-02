@@ -1,12 +1,11 @@
-// import React from 'react'
 import { useState, useEffect } from "react";
 import axios from "axios";
-import dotenv from "dotenv";
 
 const Homepage = () => {
-  dotenv.config();
-  const clientID = process.env.CLIENT_ID;
-  const clientSecret = process.env.CLIENT_SECRET;
+  const [accessToken, setAccessToken] = useState("");
+  const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
+  const clientSecret = import.meta.env.VITE_REACT_APP_CLIENT_SECRET;
+
   const [values, setValues] = useState({
     username: "",
     password: "",
@@ -30,28 +29,27 @@ const Homepage = () => {
 
   useEffect(() => {
     // API Access Token
-    let apiToken: any;
     const getAPIToken = async () => {
       try {
-        const body: string = `grant_type=client_credentials&client_id=${clientID}&client_secret=${clientSecret}`;
-        apiToken = await axios.post(
-          "https://accounts.spotify.com/api/token",
-          body,
-          {
+        const body: any = `grant_type=client_credentials&client_id=${clientID}&client_secret=${clientSecret}`;
+        await axios
+          .post("https://accounts.spotify.com/api/token", body, {
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
             },
-          }
-        );
+          })
+          .then((response) => {
+            setAccessToken(response.data.access_token);
+          });
       } catch (e: any) {
         console.log(e.error);
       }
     };
 
     getAPIToken();
-    console.log(apiToken);
   }, []);
 
+  // console.log(accessToken);
   return (
     <div className="homepage">
       <div className="title-container">
