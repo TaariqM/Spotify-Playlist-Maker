@@ -1,0 +1,123 @@
+body {
+  margin: 0;
+}
+
+.homepage {
+  display: flex;
+  height: 100vh;
+  /* min-height: 100%; */
+  /* justify-content: center; */
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(36, 36, 36);
+}
+
+.title-container {
+  text-align: center;
+  margin-top: 40px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: rgb(156 163 175);
+}
+
+.title {
+  font-size: 50px;
+  /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+  /* font-weight: 700; */
+}
+
+.form-container {
+  margin-top: 30px;
+  width: 35%;
+}
+
+.form {
+  /* margin-top: 24px; */
+}
+
+.label-input {
+  padding-bottom: 15px;
+}
+
+label {
+  display: block;
+  /* font-size: 14px; */
+  line-height: 20px;
+  font-weight: 500;
+  line-height: 24px;
+  /* color: rgb(17 24 39); */
+  color: rgb(156 163 175);
+  padding-top: 15px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.input-container {
+  margin-top: 8px;
+}
+
+input {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  border-width: 1px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+::placeholder {
+  color: rgb(156 163 175);
+}
+
+.button-container {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  margin-left: 2.5px;
+}
+
+.btn {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  border-radius: 6px;
+  border-width: 0px;
+  background-color: rgb(158, 245, 71);
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 14px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.btn:hover {
+  background-color: rgb(188, 248, 128);
+}
+
+@media screen and (min-width: 1024px) {
+  .homepage {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+@media screen and (min-width: 640px) {
+  .title-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 384px;
+  }
+
+  .form-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 384px;
+  }
+
+  input {
+    font-size: 14px;
+    line-height: 20px;
+    line-height: 24px;
+  }
+}
