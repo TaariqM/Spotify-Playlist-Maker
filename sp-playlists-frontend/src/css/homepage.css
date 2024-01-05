@@ -58,9 +58,19 @@ input {
   display: block;
   width: 100%;
   border-radius: 6px;
-  border-width: 1px;
+  border-width: 0px;
   padding-top: 6px;
   padding-bottom: 6px;
+  background-color: rgb(59, 58, 58);
+  /* border-color: rgb(128, 125, 125); */
+}
+
+input:hover {
+  border-width: 0.1px;
+  background-color: rgb(71, 71, 71);
+  /* border-color: rgb(128, 125, 125); */
+  border-color: rgb(161, 159, 159);
+  border-style: solid;
 }
 
 ::placeholder {
@@ -80,7 +90,8 @@ input {
   justify-content: center;
   border-radius: 6px;
   border-width: 0px;
-  background-color: rgb(158, 245, 71);
+  /* background-color: rgb(66 245 114); */
+  background-color: rgb(39, 217, 86);
   padding-left: 12px;
   padding-right: 12px;
   padding-top: 6px;
@@ -90,7 +101,8 @@ input {
 }
 
 .btn:hover {
-  background-color: rgb(188, 248, 128);
+  /* background-color: rgb(188, 248, 128); */
+  background-color: rgb(42, 235, 94);
 }
 
 @media screen and (min-width: 1024px) {
@@ -101,12 +113,12 @@ input {
 }
 
 @media screen and (min-width: 640px) {
-  .title-container {
+  /* .title-container {
     margin-left: auto;
     margin-right: auto;
     width: 100%;
     max-width: 384px;
-  }
+  } */
 
   .form-container {
     margin-left: auto;

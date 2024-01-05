@@ -4,6 +4,7 @@ import "../css/homepage.css";
 
 const Homepage = () => {
   const [accessToken, setAccessToken] = useState("");
+  const [spotifyUserID, setSpotifyUserID] = useState("");
   const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_REACT_APP_CLIENT_SECRET;
 
@@ -54,7 +55,7 @@ const Homepage = () => {
   return (
     <div className="homepage">
       <div className="title-container">
-        <h1 className="title">Playlist Generator</h1>
+        <h1 className="title">Spotify Playlists Generator</h1>
         <h2 className="sub-title">
           Please Enter Your Spotify Username and Password
         </h2>
