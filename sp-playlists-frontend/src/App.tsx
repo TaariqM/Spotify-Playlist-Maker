@@ -8,7 +8,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Homepage />} />
-          <Route path="/playlists" element={<Playlists />} />
+          <Route path="/playlists/:codeParam" element={<Playlists />} />
         </Routes>
       </BrowserRouter>
     </div>
