@@ -10,7 +10,8 @@ const Homepage = () => {
   const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_REACT_APP_CLIENT_SECRET;
   const redirectURI: string = "http://localhost:5173/";
-  const scope: string = "user-read-private user-read-email";
+  const scope: string =
+    "user-read-private user-read-email user-library-read ugc-image-upload";
   const authURL: string = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=${scope}`;
   const navigate = useNavigate();
 
@@ -50,6 +51,7 @@ const Homepage = () => {
   };
 
   const code = codeParams.get("code");
+  console.log(code);
   return (
     <div className="homepage">
       <div className="title-container">

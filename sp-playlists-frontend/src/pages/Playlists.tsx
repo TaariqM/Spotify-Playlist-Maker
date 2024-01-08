@@ -6,11 +6,36 @@ import axios from "axios";
 const Playlists = () => {
   const { codeParam } = useParams();
   const [accessToken, setAccessToken] = useState("");
+  const [userSavedSongs, setUserSavedSongs] = useState({});
   const redirectURI: string = "http://localhost:5173/";
   const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_REACT_APP_CLIENT_SECRET;
 
   // console.log(codeParam);
+
+  const handleOnClick = async (e: any) => {
+    e.preventDefault();
+
+    // console.log("Test");
+    try {
+      const savedSongs = await axios.get(
+        "https://api.spotify.com/v1/me/tracks?limit=50",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(savedSongs.data.items);
+      // setUserSavedSongs(savedSongs);
+    } catch (error) {
+      console.log("Error fetching saved songs: ", error);
+    }
+
+    // console.log(userSavedSongs);
+  };
+
   useEffect(() => {
     // API Access Token
     const getAccessToken = async () => {
@@ -46,7 +71,17 @@ const Playlists = () => {
 
   console.log(accessToken);
 
-  return <div>Playlists</div>;
+  return (
+    <div className="playlists">
+      <div className="empty-playlists-container">
+        <h1>Please Click On A Button To Generate A Playlist</h1>
+      </div>
+
+      <div className="generator-btn">
+        <button onClick={handleOnClick}>Generate Playlists</button>
+      </div>
+    </div>
+  );
 };
 
 export default Playlists;
