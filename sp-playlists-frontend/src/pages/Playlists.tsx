@@ -4,12 +4,16 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Playlists = () => {
+  type SongInfoState = {
+    track: { id: string; name: string }[];
+    artists: { id: string; name: string; images: any[]; genres: string[] }[];
+  };
   const { codeParam } = useParams();
   const [accessToken, setAccessToken] = useState("");
   const [userSavedSongs, setUserSavedSongs] = useState({});
-  const [songInfo, setSongInfo] = useState({
+  const [songInfo, setSongInfo] = useState<SongInfoState>({
     track: [],
-    genres: [],
+    artists: [],
   });
   const redirectURI: string = "http://localhost:5173/";
   const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
@@ -33,30 +37,61 @@ const Playlists = () => {
       );
       console.log(savedSongs.data.items);
       setUserSavedSongs(savedSongs.data.items);
+      getAllArtists(savedSongs.data.items);
     } catch (error) {
       console.log("Error fetching saved songs: ", error);
     }
 
     // getAllGenres(userSavedSongs);
-    getAllGenres(savedSongs?.data.items);
+    // getAllGenres(savedSongs?.data.items);
   };
 
-  const getAllGenres = async (songs: any) => {
+  const getAllArtists = async (songs: any) => {
     try {
-      for (let i = 0; i < songs.length; i++) {
-        const album = axios.get(
-          `https://api.spotify.com/v1/albums/${songs[i].track.album.id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
+      const updatedSongInfo = await songs.map(async (song: any) => {
+        const artistsInfo = await song.track.artists.map(
+          async (artist: any) => {
+            const artistDetails = await axios.get(
+              `https://api.spotify.com/v1/artists/${artist.id}`,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
+
+            // Extract relevant artist info
+            const { id, name, images, genres } = artistDetails.data;
+            return { id, name, images, genres };
           }
         );
-        console.log(album);
-      }
+
+        // Extract relevant track information here
+        const { id, name } = song.track;
+
+        return {
+          track: {
+            id,
+            name,
+          },
+          artists: artistsInfo,
+        };
+      });
+
+      setSongInfo((prev) => ({
+        ...prev,
+        track: [
+          ...prev.track,
+          ...updatedSongInfo.map((item: any) => item.track),
+        ],
+        artists: [
+          ...prev.artists,
+          ...updatedSongInfo.map((item: any) => item.artists),
+        ],
+      }));
     } catch (error) {
-      console.log("Error fetching alblums: ", error);
+      console.log("Error fetching albums: ", error);
     }
   };
 
