@@ -4,16 +4,14 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Playlists = () => {
-  type SongInfoState = {
-    track: { id: string; name: string }[];
-    artists: { id: string; name: string; images: any[]; genres: string[] }[];
-  };
+  // type SongInfoState = {
+  //   track: { songID: string; songName: string; artistIDs: string[] }[];
+  //   // artists: { id: string; name: string; images: any[]; genres: string[] }[];
+  // };
   const { codeParam } = useParams();
   const [accessToken, setAccessToken] = useState("");
-  const [userSavedSongs, setUserSavedSongs] = useState({});
-  const [songInfo, setSongInfo] = useState<SongInfoState>({
+  const [songInfo, setSongInfo] = useState({
     track: [],
-    artists: [],
   });
   const redirectURI: string = "http://localhost:5173/";
   const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
@@ -36,7 +34,7 @@ const Playlists = () => {
         }
       );
       console.log("All User Saved Songs: ", savedSongs.data.items);
-      setUserSavedSongs(savedSongs.data.items);
+      // setUserSavedSongs(savedSongs.data.items);
       getAllArtists(savedSongs.data.items);
     } catch (error) {
       console.log("Error fetching saved songs: ", error);
@@ -51,8 +49,10 @@ const Playlists = () => {
       // console.log("User Saved Songs From getAllArtists() Function: ", songs);
       const updatedSongInfo = await Promise.all(
         songs.map(async (song: any) => {
+          const artistsIds: string[] = [];
           const artistsInfo = await Promise.all(
             song.track.artists.map(async (artist: any) => {
+              artistsIds.push(artist.id);
               const artistDetails = await axios.get(
                 `https://api.spotify.com/v1/artists/${artist.id}`,
                 {
@@ -76,36 +76,74 @@ const Playlists = () => {
           // Extract relevant track information here
           const { id, name } = song.track;
 
-          return {
-            track: {
-              id,
-              name,
-            },
+          // Combine artist and track information
+          const trackWithArtists = {
+            id,
+            name,
             artists: artistsInfo,
           };
+
+          return trackWithArtists;
+
+          // setSongInfo((prev) => ({
+          //   ...prev,
+          //   track: [
+          //     ...prev.track,
+          //     {
+          //       id,
+          //       name,
+          //       artistIDs: artistsIds,
+          //     },
+          //   ],
+          //   artists: [
+          //     ...prev.artists,
+          //     ...(artistsInfo as {
+          //       id: string;
+          //       name: string;
+          //       images: any[];
+          //       genres: string[];
+          //     }[]),
+          //   ],
+          // }));
+
+          // return null;
+
+          // return {
+          //   track: {
+          //     id,
+          //     name,
+          //     artistIDs: artistsIds,
+          //   },
+          //   artists: artistsInfo,
+          // };
         })
       );
 
-      // console.log(updatedSongInfo);
-
-      setSongInfo((prev) => ({
+      setSongInfo((prev: any) => ({
         ...prev,
-        track: [
-          ...prev.track,
-          ...updatedSongInfo.map((item: any) => item.track),
-        ],
-        artists: [
-          ...prev.artists,
-          ...updatedSongInfo.map((item: any) => item.artists),
-        ],
+        track: [...prev.track, ...updatedSongInfo],
       }));
+
+      // console.log("Updated Song Info", updatedSongInfo);
+
+      // setSongInfo((prev) => ({
+      //   ...prev,
+      //   track: [
+      //     ...prev.track,
+      //     ...updatedSongInfo.map((item: any) => item.track),
+      //   ],
+      //   artists: [
+      //     ...prev.artists,
+      //     ...updatedSongInfo.map((item: any) => item.artists),
+      //   ],
+      // }));
     } catch (error) {
-      console.log("Error fetching albums: ", error);
+      console.log("Error fetching artist info: ", error);
     }
   };
 
   useEffect(() => {
-    console.log(songInfo);
+    console.log("Song Info: ", songInfo);
   }, [songInfo]);
 
   useEffect(() => {
