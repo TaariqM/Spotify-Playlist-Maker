@@ -35,7 +35,7 @@ const Playlists = () => {
           },
         }
       );
-      console.log(savedSongs.data.items);
+      console.log("All User Saved Songs: ", savedSongs.data.items);
       setUserSavedSongs(savedSongs.data.items);
       getAllArtists(savedSongs.data.items);
     } catch (error) {
@@ -48,36 +48,45 @@ const Playlists = () => {
 
   const getAllArtists = async (songs: any) => {
     try {
-      const updatedSongInfo = await songs.map(async (song: any) => {
-        const artistsInfo = await song.track.artists.map(
-          async (artist: any) => {
-            const artistDetails = await axios.get(
-              `https://api.spotify.com/v1/artists/${artist.id}`,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${accessToken}`,
-                },
-              }
-            );
+      // console.log("User Saved Songs From getAllArtists() Function: ", songs);
+      const updatedSongInfo = await Promise.all(
+        songs.map(async (song: any) => {
+          const artistsInfo = await Promise.all(
+            song.track.artists.map(async (artist: any) => {
+              const artistDetails = await axios.get(
+                `https://api.spotify.com/v1/artists/${artist.id}`,
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                  },
+                }
+              );
 
-            // Extract relevant artist info
-            const { id, name, images, genres } = artistDetails.data;
-            return { id, name, images, genres };
-          }
-        );
+              // console.log("Artist Details: ", artistDetails);
 
-        // Extract relevant track information here
-        const { id, name } = song.track;
+              // Extract relevant artist info
+              const { id, name, images, genres } = artistDetails.data;
+              return { id, name, images, genres };
+            })
+          );
 
-        return {
-          track: {
-            id,
-            name,
-          },
-          artists: artistsInfo,
-        };
-      });
+          // console.log("Artists Info: ", artistsInfo);
+
+          // Extract relevant track information here
+          const { id, name } = song.track;
+
+          return {
+            track: {
+              id,
+              name,
+            },
+            artists: artistsInfo,
+          };
+        })
+      );
+
+      // console.log(updatedSongInfo);
 
       setSongInfo((prev) => ({
         ...prev,
@@ -94,6 +103,10 @@ const Playlists = () => {
       console.log("Error fetching albums: ", error);
     }
   };
+
+  useEffect(() => {
+    console.log(songInfo);
+  }, [songInfo]);
 
   useEffect(() => {
     // API Access Token
