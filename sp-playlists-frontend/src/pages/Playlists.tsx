@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import genreToSongMatcher from "../functions/GenreToSongMatcher";
+import mapToArrayConverter from "../functions/MapToArrayConverter";
+import Playlists_Card from "../components/Playlists_Card";
 
 const Playlists = () => {
   // type SongInfoState = {
@@ -146,6 +148,10 @@ const Playlists = () => {
   useEffect(() => {
     console.log("Song Info: ", songInfo);
     // console.log("Match Genre to Song: ", genreToSongMatcher(songInfo));
+    console.log(
+      "Map to Array Converter: ",
+      mapToArrayConverter(genreToSongMatcher(songInfo))
+    );
   }, [songInfo]);
 
   useEffect(() => {
@@ -193,6 +199,20 @@ const Playlists = () => {
         <div className="generator-btn">
           <button onClick={handleOnClick}>Generate Playlists</button>
         </div>
+
+        {mapToArrayConverter(genreToSongMatcher(songInfo)).map((entry: any) => (
+          <div key={entry.key}>
+            <Playlists_Card music={entry} />
+          </div>
+        ))}
+        {/* {[...genreToSongMatcher(songInfo)].map((entry) => {
+          <Playlists_Card music={entry} />;
+        })} */}
+        {/* {genreToSongMatcher(songInfo)
+          .entries()
+          .map((entry: any) => {
+            <Playlists_Card music={entry} />;
+          })} */}
       </div>
     </div>
   );

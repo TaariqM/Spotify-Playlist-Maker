@@ -1,23 +1,7 @@
-// type SongInfoState = {
-//   track: { id: string; name: string }[];
-//   artists: { id: string; name: string; images: any[]; genres: string[] }[];
-// };
-// import { useState } from "react";
-
 function genreToSongMatcher(songInfo: any): any {
-  // let genreContainer = {
-  //   genreName: "",
-  //   songID: "",
-  //   artistID: "",
-  // };
-  // const [genreContainer, setGenreContainer] = useState({
-  //   genres: []
-  // });
+  const genreDict = new Map<string, any[]>();
 
-  let genreDict: { [key: string]: any[] } = {};
-
-  songInfo.map((song: any) => {
-    // let track: any = song.track;
+  songInfo.track.map((song: any) => {
     song.artists.map((artist: any) => {
       artist.genres.map((genre: string) => {
         const songData = {
@@ -36,12 +20,12 @@ function genreToSongMatcher(songInfo: any): any {
           artistDataInfo: artistData,
         };
 
-        if (genreDict[genre] === null) {
+        if (genreDict.get(genre) == null) {
           let array: any[] = [];
           array.push(trackData);
-          genreDict[genre] = array;
+          genreDict.set(genre, array);
         } else {
-          genreDict[genre].push(trackData);
+          genreDict.get(genre)?.push(trackData);
         }
       });
     });
