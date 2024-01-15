@@ -2,6 +2,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import genreToSongMatcher from "../functions/GenreToSongMatcher";
 
 const Playlists = () => {
   // type SongInfoState = {
@@ -144,6 +145,7 @@ const Playlists = () => {
 
   useEffect(() => {
     console.log("Song Info: ", songInfo);
+    // console.log("Match Genre to Song: ", genreToSongMatcher(songInfo));
   }, [songInfo]);
 
   useEffect(() => {
