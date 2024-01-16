@@ -5,12 +5,9 @@ import axios from "axios";
 import genreToSongMatcher from "../functions/GenreToSongMatcher";
 import mapToArrayConverter from "../functions/MapToArrayConverter";
 import Playlists_Card from "../components/Playlists_Card";
+import "../css/playlists.css";
 
 const Playlists = () => {
-  // type SongInfoState = {
-  //   track: { songID: string; songName: string; artistIDs: string[] }[];
-  //   // artists: { id: string; name: string; images: any[]; genres: string[] }[];
-  // };
   const { codeParam } = useParams();
   const [accessToken, setAccessToken] = useState("");
   const [songInfo, setSongInfo] = useState({
@@ -42,9 +39,6 @@ const Playlists = () => {
     } catch (error) {
       console.log("Error fetching saved songs: ", error);
     }
-
-    // getAllGenres(userSavedSongs);
-    // getAllGenres(savedSongs?.data.items);
   };
 
   const getAllArtists = async (songs: any) => {
@@ -87,38 +81,6 @@ const Playlists = () => {
           };
 
           return trackWithArtists;
-
-          // setSongInfo((prev) => ({
-          //   ...prev,
-          //   track: [
-          //     ...prev.track,
-          //     {
-          //       id,
-          //       name,
-          //       artistIDs: artistsIds,
-          //     },
-          //   ],
-          //   artists: [
-          //     ...prev.artists,
-          //     ...(artistsInfo as {
-          //       id: string;
-          //       name: string;
-          //       images: any[];
-          //       genres: string[];
-          //     }[]),
-          //   ],
-          // }));
-
-          // return null;
-
-          // return {
-          //   track: {
-          //     id,
-          //     name,
-          //     artistIDs: artistsIds,
-          //   },
-          //   artists: artistsInfo,
-          // };
         })
       );
 
@@ -126,20 +88,6 @@ const Playlists = () => {
         ...prev,
         track: [...prev.track, ...updatedSongInfo],
       }));
-
-      // console.log("Updated Song Info", updatedSongInfo);
-
-      // setSongInfo((prev) => ({
-      //   ...prev,
-      //   track: [
-      //     ...prev.track,
-      //     ...updatedSongInfo.map((item: any) => item.track),
-      //   ],
-      //   artists: [
-      //     ...prev.artists,
-      //     ...updatedSongInfo.map((item: any) => item.artists),
-      //   ],
-      // }));
     } catch (error) {
       console.log("Error fetching artist info: ", error);
     }
@@ -193,27 +141,28 @@ const Playlists = () => {
     <div className="playlists">
       <div className="container">
         <div className="empty-playlists-container">
-          <h1>Please Click On A Button To Generate A Playlist</h1>
+          <h1 className="playlists-container-title">
+            Please Click On A Button To Generate A Playlist
+          </h1>
         </div>
 
-        <div className="generator-btn">
-          <button onClick={handleOnClick}>Generate Playlists</button>
+        <div className="generator-btn-container">
+          <button className="generator-btn" onClick={handleOnClick}>
+            Generate Playlists
+          </button>
         </div>
-
-        {mapToArrayConverter(genreToSongMatcher(songInfo)).map((entry: any) => (
-          <div key={entry.key}>
-            <Playlists_Card music={entry} />
-          </div>
-        ))}
-        {/* {[...genreToSongMatcher(songInfo)].map((entry) => {
-          <Playlists_Card music={entry} />;
-        })} */}
-        {/* {genreToSongMatcher(songInfo)
-          .entries()
-          .map((entry: any) => {
-            <Playlists_Card music={entry} />;
-          })} */}
       </div>
+
+      <div className="card-container">
+        {mapToArrayConverter(genreToSongMatcher(songInfo)).map((entry: any) => (
+          <Playlists_Card music={entry} />
+        ))}
+      </div>
+      {/* {mapToArrayConverter(genreToSongMatcher(songInfo)).map((entry: any) => (
+        <div className="card-container" key={entry.key}>
+          <Playlists_Card music={entry} />
+        </div>
+      ))} */}
     </div>
   );
 };
