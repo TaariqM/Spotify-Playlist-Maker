@@ -153,7 +153,7 @@ const Playlists = () => {
         </div>
       </div>
 
-      <div className="card-container">
+      <div className="cards-container">
         {mapToArrayConverter(genreToSongMatcher(songInfo)).map((entry: any) => (
           <Playlists_Card music={entry} />
         ))}
