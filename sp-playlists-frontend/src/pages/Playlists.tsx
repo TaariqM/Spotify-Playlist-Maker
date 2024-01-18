@@ -142,7 +142,7 @@ const Playlists = () => {
       <div className="container">
         <div className="empty-playlists-container">
           <h1 className="playlists-container-title">
-            Please Click On A Button To Generate A Playlist
+            Please Click The Button To Generate Playlists
           </h1>
         </div>
 

@@ -13,12 +13,25 @@
   /* color: rgb(17 24 39); */
 }
 
+.card-container:hover {
+  background-color: rgb(71, 71, 71);
+  /* border-width: 0.1px;
+  border-color: rgb(161, 159, 159);
+  border-style: solid; */
+}
+
 img {
   /* object-fit: contain; */
   height: 160px;
   width: 160px;
+  border-radius: 8px;
 }
 
 h3 {
   inline-size: 160px;
+  color: rgb(225, 226, 227);
+}
+
+.card-container-btn-container-button {
+  border-radius: 8px;
 }
