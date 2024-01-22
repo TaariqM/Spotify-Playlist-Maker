@@ -8,11 +8,14 @@ function genreToSongMatcher(songInfo: any): any {
           songID: song.id,
           songName: song.name,
         };
-
+        let imageArray: any[] = [];
+        imageArray.push(artist.images[1]);
+        imageArray.push(artist.images[2]);
         const artistData = {
           artistID: artist.id,
           artistName: artist.name,
-          artistIMG: artist.images[2],
+          artistIMG: imageArray,
+          // artistIMG: artist.images[2],
         };
 
         const trackData = {

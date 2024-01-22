@@ -24,7 +24,7 @@ const Playlists_Card = ({ music }: { music: any }) => {
         state: {
           genre: music[0],
           songs: music[1],
-          image: music[1][index].artistDataInfo.artistIMG.url,
+          image: music[1][index].artistDataInfo.artistIMG[0].url,
           coverArtist: music[1][index].artistDataInfo.artistName,
         },
       });
@@ -44,7 +44,7 @@ const Playlists_Card = ({ music }: { music: any }) => {
 
     <div className="card-container" onClick={handleOnClick}>
       <div className="card-container-pic-container">
-        <img src={music[1][index].artistDataInfo.artistIMG.url}></img>
+        <img src={music[1][index].artistDataInfo.artistIMG[1].url}></img>
       </div>
 
       <div className="card-container-title-container">
