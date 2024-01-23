@@ -1,4 +1,6 @@
 import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const GenrePlaylist = () => {
   const location = useLocation();
@@ -8,6 +10,11 @@ const GenrePlaylist = () => {
   console.log("Playlist Image: ", image);
   console.log("Cover Artist: ", coverArtist);
 
+  const getSongData = async (song: any) => {
+    const songData = await axios.get(
+      `https://api.spotify.com/v1/tracks/${song.songDataInfo.songID}`
+    );
+  };
   return (
     <div className="genre-playlist-container">
       <div className="genre-playlist-container-img-title-container">
@@ -25,6 +32,9 @@ const GenrePlaylist = () => {
           <thead>
             <tr>
               <th>
+                <div>Album Cover</div>
+              </th>
+              <th>
                 <div>Name</div>
               </th>
               <th>
@@ -32,6 +42,9 @@ const GenrePlaylist = () => {
               </th>
               <th>
                 <div>Album</div>
+              </th>
+              <th>
+                <div>Duration</div>
               </th>
             </tr>
           </thead>
