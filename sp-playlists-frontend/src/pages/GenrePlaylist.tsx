@@ -1,5 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAccessToken } from "../contexts/AccessTokenContext";
+// import { useAccessToken } from "./Playlists";
 import axios from "axios";
 
 const GenrePlaylist = () => {
@@ -9,6 +11,10 @@ const GenrePlaylist = () => {
   console.log("Songs in the genre: ", songs);
   console.log("Playlist Image: ", image);
   console.log("Cover Artist: ", coverArtist);
+
+  const { accessToken } = useAccessToken();
+  // const accessToken = useAccessToken();
+  console.log("Access Token in GenrePlaylist Component: ", accessToken);
 
   const getSongData = async (song: any) => {
     const songData = await axios.get(
@@ -49,8 +55,9 @@ const GenrePlaylist = () => {
             </tr>
           </thead>
           <tbody>
-            {songs.map((song: any) => (
-              <tr key={song.songDataInfo.songID}>
+            {songs.map((song: any, index: number) => (
+              // song.songDataInfo.songID
+              <tr key={index}>
                 <td>{song.songDataInfo.songName}</td>
                 <td>Artist</td>
                 <td>Album</td>

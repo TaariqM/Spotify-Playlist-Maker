@@ -1,36 +1,23 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import { useAccessToken } from "../contexts/AccessTokenContext";
 // import crypto from "crypto";
 import "../css/homepage.css";
 
 const Homepage = () => {
-  const [spotifyUserID, setSpotifyUserID] = useState("");
   const [codeParams, setCodeParams] = useSearchParams();
   const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
-  const clientSecret = import.meta.env.VITE_REACT_APP_CLIENT_SECRET;
   const redirectURI: string = "http://localhost:5173/";
   const scope: string =
     "user-read-private user-read-email user-library-read ugc-image-upload";
   const authURL: string = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=${scope}`;
   const navigate = useNavigate();
-
-  const [values, setValues] = useState({
-    username: "",
-    password: "",
-  });
-
-  const handleChange = (e: any) => {
-    e.preventDefault();
-    setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    // console.log(values);
-  };
+  const { setCode } = useAccessToken();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
     try {
-      // console.log(values);
       navigate(authURL);
     } catch (error) {
       console.error(error);
@@ -39,19 +26,25 @@ const Homepage = () => {
 
   const handleButtonClick = (e: any) => {
     e.preventDefault();
-    const buttonText = code
+    const buttonText = authorizationCode
       ? "Continue with Spotify Playlists Generator"
       : "Login With Spotify";
     if (buttonText === "Login With Spotify") {
       window.location.href = authURL;
     } else {
-      //Navigate to Playlists page
-      navigate(`/playlists/${code}`);
+      navigate(`/playlists/${authorizationCode}`);
     }
   };
 
-  const code = codeParams.get("code");
-  console.log(code);
+  const authorizationCode = codeParams.get("code");
+
+  useEffect(() => {
+    if (authorizationCode) {
+      setCode(authorizationCode);
+    }
+  }, [authorizationCode, setCode]);
+
+  console.log(authorizationCode);
   return (
     <div className="homepage">
       <div className="title-container">
@@ -87,7 +80,7 @@ const Homepage = () => {
 
           <div className="button-container">
             <button className="btn" onClick={handleButtonClick}>
-              {code
+              {authorizationCode
                 ? "Continue with Spotify Playlists Generator"
                 : "Login With Spotify"}
             </button>

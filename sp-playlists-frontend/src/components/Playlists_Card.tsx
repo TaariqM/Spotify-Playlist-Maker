@@ -1,10 +1,10 @@
-import {
-  CCard,
-  CCardImage,
-  CCardBody,
-  CCardTitle,
-  CButton,
-} from "@coreui/react";
+// import {
+//   CCard,
+//   CCardImage,
+//   CCardBody,
+//   CCardTitle,
+//   CButton,
+// } from "@coreui/react";
 import { useNavigate } from "react-router-dom";
 import "../css/playlists_card.css";
 

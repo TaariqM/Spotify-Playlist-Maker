@@ -1,6 +1,5 @@
-// import React from 'react'
-import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAccessToken } from "../contexts/AccessTokenContext";
 import axios from "axios";
 import genreToSongMatcher from "../functions/GenreToSongMatcher";
 import mapToArrayConverter from "../functions/MapToArrayConverter";
@@ -8,14 +7,12 @@ import Playlists_Card from "../components/Playlists_Card";
 import "../css/playlists.css";
 
 const Playlists = () => {
-  const { codeParam } = useParams();
-  const [accessToken, setAccessToken] = useState("");
+  // const [accessToken, setAccessToken] = useState("");
   const [songInfo, setSongInfo] = useState({
     track: [],
   });
-  const redirectURI: string = "http://localhost:5173/";
-  const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
-  const clientSecret = import.meta.env.VITE_REACT_APP_CLIENT_SECRET;
+
+  const { accessToken } = useAccessToken();
 
   // console.log(codeParam);
 
@@ -102,41 +99,6 @@ const Playlists = () => {
     );
   }, [songInfo]);
 
-  useEffect(() => {
-    // API Access Token
-    const getAccessToken = async () => {
-      try {
-        if (!codeParam) {
-          console.error("Authentication code is missing");
-          return;
-        }
-        const formData = new URLSearchParams({
-          code: codeParam || "",
-          redirect_uri: redirectURI,
-          grant_type: "authorization_code",
-        });
-
-        const authHeader = `Basic ${btoa(`${clientID}:${clientSecret}`)}`;
-        await axios
-          .post("https://accounts.spotify.com/api/token", formData.toString(), {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              Authorization: authHeader,
-            },
-          })
-          .then((response) => {
-            setAccessToken(response.data.access_token);
-          });
-      } catch (e: any) {
-        console.log(e.error);
-      }
-    };
-
-    getAccessToken();
-  }, []);
-
-  // console.log(accessToken);
-
   return (
     <div className="playlists">
       <div className="container">
@@ -158,11 +120,6 @@ const Playlists = () => {
           <Playlists_Card music={entry} key={entry[0]} />
         ))}
       </div>
-      {/* {mapToArrayConverter(genreToSongMatcher(songInfo)).map((entry: any) => (
-        <div className="card-container" key={entry.key}>
-          <Playlists_Card music={entry} />
-        </div>
-      ))} */}
     </div>
   );
 };
