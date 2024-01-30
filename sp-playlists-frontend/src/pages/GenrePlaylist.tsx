@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAccessToken } from "../contexts/AccessTokenContext";
+import mapToArrayConverter from "../functions/MapToArrayConverter";
 // import { useAccessToken } from "./Playlists";
 import axios from "axios";
 
@@ -13,14 +14,56 @@ const GenrePlaylist = () => {
   console.log("Cover Artist: ", coverArtist);
 
   const { accessToken } = useAccessToken();
-  // const accessToken = useAccessToken();
+  const [tracksInChart, setTracksInChart] = useState();
+
   console.log("Access Token in GenrePlaylist Component: ", accessToken);
 
-  const getSongData = async (song: any) => {
-    const songData = await axios.get(
-      `https://api.spotify.com/v1/tracks/${song.songDataInfo.songID}`
+  useEffect(() => {
+    const removeDuplicateSongs = (allSongs: any): any => {
+      const noDuplicates = new Map<string, any>();
+      // const noDuplicates: any[] = [];
+      allSongs.map((song: any) => {
+        // if (!noDuplicates.includes(song)) {
+        //   noDuplicates.push(song);
+        // }
+
+        if (!noDuplicates.has(song.songDataInfo.songName)) {
+          noDuplicates.set(song.songDataInfo.songName, song);
+        }
+      });
+
+      return noDuplicates;
+    };
+
+    const getSongData = async (allSongs: any[]) => {
+      const allSongsInfo = await Promise.all(
+        allSongs.map(async (song: any) => {
+          const trackName: string = song[0];
+          const songData = await axios.get(
+            `https://api.spotify.com/v1/tracks/${song[1].songDataInfo.songID}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          // console.log("Song Data: ", songData.data);
+          const { album, artists, duration_ms } = songData.data;
+          return { trackName, album, artists, duration_ms };
+        })
+      );
+
+      console.log("All Songs Info: ", allSongsInfo);
+    };
+
+    const noDuplicateSongs: any[] = mapToArrayConverter(
+      removeDuplicateSongs(songs)
     );
-  };
+    console.log("Songs with no Duplicates", noDuplicateSongs);
+    getSongData(noDuplicateSongs);
+  }, []);
+
   return (
     <div className="genre-playlist-container">
       <div className="genre-playlist-container-img-title-container">
