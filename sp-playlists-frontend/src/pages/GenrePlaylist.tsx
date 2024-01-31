@@ -2,21 +2,21 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAccessToken } from "../contexts/AccessTokenContext";
 import mapToArrayConverter from "../functions/MapToArrayConverter";
-// import { useAccessToken } from "./Playlists";
+import millisecondsToMinutesAndSeconds from "../functions/MillisecondsToMinutesAndSeconds";
 import axios from "axios";
 
 const GenrePlaylist = () => {
   const location = useLocation();
   const { genre, songs, image, coverArtist } = location.state;
-  console.log("Name of Genre", genre);
-  console.log("Songs in the genre: ", songs);
-  console.log("Playlist Image: ", image);
-  console.log("Cover Artist: ", coverArtist);
+  // console.log("Name of Genre", genre);
+  // console.log("Songs in the genre: ", songs);
+  // console.log("Playlist Image: ", image);
+  // console.log("Cover Artist: ", coverArtist);
 
   const { accessToken } = useAccessToken();
-  const [tracksInChart, setTracksInChart] = useState();
+  const [tracksInChart, setTracksInChart] = useState<any[]>([]);
 
-  console.log("Access Token in GenrePlaylist Component: ", accessToken);
+  // console.log("Access Token in GenrePlaylist Component: ", accessToken);
 
   useEffect(() => {
     const removeDuplicateSongs = (allSongs: any): any => {
@@ -50,19 +50,34 @@ const GenrePlaylist = () => {
           );
           // console.log("Song Data: ", songData.data);
           const { album, artists, duration_ms } = songData.data;
-          return { trackName, album, artists, duration_ms };
+          const trackInfo = {
+            trackName: trackName,
+            album: album,
+            artists: artists,
+            duration: duration_ms,
+          };
+
+          setTracksInChart((prev: any[]) => [...prev, trackInfo]);
+
+          // return { trackName, album, artists, duration_ms };
         })
       );
 
-      console.log("All Songs Info: ", allSongsInfo);
+      // setTracksInChart(allSongsInfo);
+
+      // console.log("All Songs Info: ", allSongsInfo);
     };
 
     const noDuplicateSongs: any[] = mapToArrayConverter(
       removeDuplicateSongs(songs)
     );
-    console.log("Songs with no Duplicates", noDuplicateSongs);
+    // console.log("Songs with no Duplicates", noDuplicateSongs);
     getSongData(noDuplicateSongs);
   }, []);
+
+  // useEffect(() => {
+  //   console.log("Tracks that will be in the chart: ", tracksInChart);
+  // }, [tracksInChart]);
 
   return (
     <div className="genre-playlist-container">
@@ -74,6 +89,10 @@ const GenrePlaylist = () => {
         <div className="genre-playlist-container-img-title-container-title">
           <h1 className="genre-playlist-title">{genre}</h1>
         </div>
+      </div>
+
+      <div>
+        <h2>Cover Artist: {coverArtist}</h2>
       </div>
 
       <div className="genre-playlist-container-songs-container">
@@ -98,12 +117,19 @@ const GenrePlaylist = () => {
             </tr>
           </thead>
           <tbody>
-            {songs.map((song: any, index: number) => (
-              // song.songDataInfo.songID
+            {tracksInChart.map((track: any, index: number) => (
               <tr key={index}>
-                <td>{song.songDataInfo.songName}</td>
-                <td>Artist</td>
-                <td>Album</td>
+                <td>
+                  <img src={track.album.images[2].url} />
+                </td>
+                <td>{track.trackName}</td>
+                <td>
+                  {track.artists.map((artist: any) => {
+                    artist.name;
+                  })}
+                </td>
+                <td>{track.album.name}</td>
+                <td>{millisecondsToMinutesAndSeconds(track.duration)}</td>
               </tr>
             ))}
           </tbody>
