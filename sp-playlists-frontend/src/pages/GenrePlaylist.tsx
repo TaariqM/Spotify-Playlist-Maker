@@ -8,6 +8,7 @@ import axios from "axios";
 const GenrePlaylist = () => {
   const location = useLocation();
   const { genre, songs, image, coverArtist } = location.state;
+
   // console.log("Name of Genre", genre);
   // console.log("Songs in the genre: ", songs);
   // console.log("Playlist Image: ", image);
@@ -16,23 +17,16 @@ const GenrePlaylist = () => {
   const { accessToken } = useAccessToken();
   const [tracksInChart, setTracksInChart] = useState<any[]>([]);
 
-  // console.log("Access Token in GenrePlaylist Component: ", accessToken);
-
   useEffect(() => {
-    const removeDuplicateSongs = (allSongs: any): any => {
+    const removeDuplicateSongs = (allSongs: any): any[] => {
       const noDuplicates = new Map<string, any>();
-      // const noDuplicates: any[] = [];
       allSongs.map((song: any) => {
-        // if (!noDuplicates.includes(song)) {
-        //   noDuplicates.push(song);
-        // }
-
         if (!noDuplicates.has(song.songDataInfo.songName)) {
           noDuplicates.set(song.songDataInfo.songName, song);
         }
       });
 
-      return noDuplicates;
+      return mapToArrayConverter(noDuplicates);
     };
 
     const getSongData = async (allSongs: any[]) => {
@@ -48,7 +42,6 @@ const GenrePlaylist = () => {
               },
             }
           );
-          // console.log("Song Data: ", songData.data);
           const { album, artists, duration_ms } = songData.data;
           const trackInfo = {
             trackName: trackName,
@@ -56,28 +49,21 @@ const GenrePlaylist = () => {
             artists: artists,
             duration: duration_ms,
           };
-
-          setTracksInChart((prev: any[]) => [...prev, trackInfo]);
-
-          // return { trackName, album, artists, duration_ms };
+          return trackInfo;
         })
       );
 
-      // setTracksInChart(allSongsInfo);
-
-      // console.log("All Songs Info: ", allSongsInfo);
+      setTracksInChart([...allSongsInfo]);
     };
 
-    const noDuplicateSongs: any[] = mapToArrayConverter(
-      removeDuplicateSongs(songs)
-    );
-    // console.log("Songs with no Duplicates", noDuplicateSongs);
+    const noDuplicateSongs: any[] = removeDuplicateSongs(songs);
+    console.log("Songs with no Duplicates", noDuplicateSongs);
     getSongData(noDuplicateSongs);
   }, []);
 
-  // useEffect(() => {
-  //   console.log("Tracks that will be in the chart: ", tracksInChart);
-  // }, [tracksInChart]);
+  useEffect(() => {
+    console.log("Tracks that will be in the chart: ", tracksInChart);
+  }, [tracksInChart]);
 
   return (
     <div className="genre-playlist-container">
