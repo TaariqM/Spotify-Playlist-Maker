@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useAccessToken } from "../contexts/AccessTokenContext";
 import mapToArrayConverter from "../functions/MapToArrayConverter";
 import millisecondsToMinutesAndSeconds from "../functions/MillisecondsToMinutesAndSeconds";
+import "../css/genre_playlist.css";
 import axios from "axios";
 
 const GenrePlaylist = () => {
@@ -16,6 +17,22 @@ const GenrePlaylist = () => {
 
   const { accessToken } = useAccessToken();
   const [tracksInChart, setTracksInChart] = useState<any[]>([]);
+
+  const getArtistNames = (artists: any[]): string => {
+    let artistsNames = "";
+
+    if (artists.length > 1) {
+      for (let artist of artists) {
+        artistsNames = artistsNames + artist.name + ", ";
+      }
+
+      artistsNames = artistsNames.substring(0, artistsNames.length - 2);
+    } else {
+      artistsNames = artists[0].name;
+    }
+
+    return artistsNames;
+  };
 
   useEffect(() => {
     const removeDuplicateSongs = (allSongs: any): any[] => {
@@ -77,7 +94,7 @@ const GenrePlaylist = () => {
         </div>
       </div>
 
-      <div>
+      <div className="genre-playlist-container-cover-artist-name">
         <h2>Cover Artist: {coverArtist}</h2>
       </div>
 
@@ -109,11 +126,7 @@ const GenrePlaylist = () => {
                   <img src={track.album.images[2].url} />
                 </td>
                 <td>{track.trackName}</td>
-                <td>
-                  {track.artists.map((artist: any) => {
-                    artist.name;
-                  })}
-                </td>
+                <td>{getArtistNames(track.artists)}</td>
                 <td>{track.album.name}</td>
                 <td>{millisecondsToMinutesAndSeconds(track.duration)}</td>
               </tr>

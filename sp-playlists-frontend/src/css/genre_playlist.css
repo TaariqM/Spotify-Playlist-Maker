@@ -1,0 +1,22 @@
+.genre-playlist-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin-top: 40px;
+  margin-left: 40px;
+}
+
+.genre-playlist-container-img-title-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.genre-playlist-container-img-title-container-title {
+  margin-left: 30px;
+  align-items: flex-start;
+}
+
+.genre-playlist-container-cover-artist-name {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
