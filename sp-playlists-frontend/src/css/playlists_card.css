@@ -20,10 +20,18 @@
   border-style: solid; */
 }
 
-img {
-  /* object-fit: contain; */
+/* object-fit: contain; This was originally inside the 'img' tag. Removed it in order to comment out the 'img' tag*/
+
+/* img {
   height: 160px;
   width: 160px;
+  border-radius: 8px;
+} */
+
+.card-container-pic-container-pic {
+  height: 160px;
+  width: 160px;
+  object-fit: cover;
   border-radius: 8px;
 }
 

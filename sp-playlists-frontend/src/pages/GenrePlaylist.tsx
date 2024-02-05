@@ -90,12 +90,12 @@ const GenrePlaylist = () => {
         </div>
 
         <div className="genre-playlist-container-img-title-container-title">
-          <h1 className="genre-playlist-title">{genre}</h1>
+          <h1 className="genre-playlist-text">{genre}</h1>
         </div>
       </div>
 
       <div className="genre-playlist-container-cover-artist-name">
-        <h2>Cover Artist: {coverArtist}</h2>
+        <h2 className="genre-playlist-text">Cover Artist: {coverArtist}</h2>
       </div>
 
       <div className="genre-playlist-container-songs-container">
@@ -103,32 +103,36 @@ const GenrePlaylist = () => {
           <thead>
             <tr>
               <th>
-                <div>Album Cover</div>
+                <div className="genre-playlist-text">Album Cover</div>
               </th>
               <th>
-                <div>Name</div>
+                <div className="genre-playlist-text">Name</div>
               </th>
               <th>
-                <div>Artists</div>
+                <div className="genre-playlist-text">Artists</div>
               </th>
               <th>
-                <div>Album</div>
+                <div className="genre-playlist-text">Album</div>
               </th>
               <th>
-                <div>Duration</div>
+                <div className="genre-playlist-text">Duration</div>
               </th>
             </tr>
           </thead>
           <tbody>
             {tracksInChart.map((track: any, index: number) => (
-              <tr key={index}>
+              <tr className="genre-playlist-row" key={index}>
                 <td>
                   <img src={track.album.images[2].url} />
                 </td>
-                <td>{track.trackName}</td>
-                <td>{getArtistNames(track.artists)}</td>
-                <td>{track.album.name}</td>
-                <td>{millisecondsToMinutesAndSeconds(track.duration)}</td>
+                <td className="genre-playlist-text">{track.trackName}</td>
+                <td className="genre-playlist-text">
+                  {getArtistNames(track.artists)}
+                </td>
+                <td className="genre-playlist-text">{track.album.name}</td>
+                <td className="genre-playlist-text">
+                  {millisecondsToMinutesAndSeconds(track.duration)}
+                </td>
               </tr>
             ))}
           </tbody>

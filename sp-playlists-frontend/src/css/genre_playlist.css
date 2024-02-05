@@ -1,14 +1,31 @@
+/* body {
+  margin: 0;
+} */
+
 .genre-playlist-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  margin-top: 40px;
-  margin-left: 40px;
+  /* height: 100vh; */
+  height: 100%;
+  padding-top: 40px;
+  padding-left: 40px;
+  padding-right: 40px;
+  background-color: rgb(36, 36, 36);
+  /* overflow: auto; */
 }
 
 .genre-playlist-container-img-title-container {
   display: flex;
   flex-direction: row;
+}
+
+.genre-playlist-img {
+  border-radius: 8px;
+}
+
+.genre-playlist-text {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: rgb(156 163 175);
 }
 
 .genre-playlist-container-img-title-container-title {
@@ -19,4 +36,20 @@
 .genre-playlist-container-cover-artist-name {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.genre-playlist-row:hover {
+  background-color: rgb(71, 71, 71);
 }

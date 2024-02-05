@@ -44,7 +44,10 @@ const Playlists_Card = ({ music }: { music: any }) => {
 
     <div className="card-container" onClick={handleOnClick}>
       <div className="card-container-pic-container">
-        <img src={music[1][index].artistDataInfo.artistIMG[1].url}></img>
+        <img
+          className="card-container-pic-container-pic"
+          src={music[1][index].artistDataInfo.artistIMG[1].url}
+        ></img>
       </div>
 
       <div className="card-container-title-container">
