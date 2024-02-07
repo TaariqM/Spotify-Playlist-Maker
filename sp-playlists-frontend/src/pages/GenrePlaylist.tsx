@@ -11,12 +11,31 @@ const GenrePlaylist = () => {
   const { genre, songs, image, coverArtist } = location.state;
 
   // console.log("Name of Genre", genre);
-  // console.log("Songs in the genre: ", songs);
+  console.log("Songs in the genre: ", songs);
   // console.log("Playlist Image: ", image);
   // console.log("Cover Artist: ", coverArtist);
 
   const { accessToken } = useAccessToken();
   const [tracksInChart, setTracksInChart] = useState<any[]>([]);
+  const [deviceID, setDeviceID] = useState<string>();
+
+  const play_snippet = (e: any, trackURI: string) => {
+    e.preventDefault();
+    axios.put(
+      `https://api.spotify.com/v1/me/player/play?device_id=${deviceID}`,
+      {
+        uris: [trackURI],
+        // offset: { uri: trackURI },
+        position_ms: 0,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  };
 
   const getArtistNames = (artists: any[]): string => {
     let artistsNames = "";
@@ -65,6 +84,7 @@ const GenrePlaylist = () => {
             album: album,
             artists: artists,
             duration: duration_ms,
+            trackURI: song[1].songDataInfo.songURI,
           };
           return trackInfo;
         })
@@ -73,9 +93,28 @@ const GenrePlaylist = () => {
       setTracksInChart([...allSongsInfo]);
     };
 
+    const getDevice = async () => {
+      try {
+        const userDevices = await axios.get(
+          "https://api.spotify.com/v1/me/player/devices",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        console.log("List of Devices for User: ", userDevices.data.devices);
+        setDeviceID(userDevices.data.devices[0].id);
+      } catch (error) {
+        console.error("Error fetching devices: ", error);
+      }
+    };
+
     const noDuplicateSongs: any[] = removeDuplicateSongs(songs);
     console.log("Songs with no Duplicates", noDuplicateSongs);
     getSongData(noDuplicateSongs);
+    getDevice();
   }, []);
 
   useEffect(() => {
@@ -121,7 +160,11 @@ const GenrePlaylist = () => {
           </thead>
           <tbody>
             {tracksInChart.map((track: any, index: number) => (
-              <tr className="genre-playlist-row" key={index}>
+              <tr
+                className="genre-playlist-row"
+                key={index}
+                onClick={(e) => play_snippet(e, track.trackURI)}
+              >
                 <td>
                   <img src={track.album.images[2].url} />
                 </td>

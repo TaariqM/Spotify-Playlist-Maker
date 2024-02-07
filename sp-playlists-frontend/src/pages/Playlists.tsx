@@ -68,12 +68,13 @@ const Playlists = () => {
           // console.log("Artists Info: ", artistsInfo);
 
           // Extract relevant track information here
-          const { id, name } = song.track;
+          const { id, name, uri } = song.track;
 
           // Combine artist and track information
           const trackWithArtists = {
             id,
             name,
+            uri,
             artists: artistsInfo,
           };
 

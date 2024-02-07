@@ -9,7 +9,7 @@ const Homepage = () => {
   const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
   const redirectURI: string = "http://localhost:5173/";
   const scope: string =
-    "user-read-private user-read-email user-library-read ugc-image-upload";
+    "user-read-private user-read-email user-library-read ugc-image-upload user-read-playback-state user-modify-playback-state";
   const authURL: string = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=${scope}`;
   const navigate = useNavigate();
   const { setCode } = useAccessToken();
@@ -49,9 +49,9 @@ const Homepage = () => {
     <div className="homepage">
       <div className="title-container">
         <h1 className="title">Spotify Playlists Generator</h1>
-        <h2 className="sub-title">
+        {/*<h2 className="sub-title">
           Please Enter Your Spotify Username and Password
-        </h2>
+  </h2> */}
       </div>
 
       <div className="form-container">
