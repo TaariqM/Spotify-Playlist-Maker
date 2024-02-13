@@ -1,6 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAccessToken } from "../contexts/AccessTokenContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 import mapToArrayConverter from "../functions/MapToArrayConverter";
 import millisecondsToMinutesAndSeconds from "../functions/MillisecondsToMinutesAndSeconds";
 import "../css/genre_playlist.css";
@@ -18,23 +20,80 @@ const GenrePlaylist = () => {
   const { accessToken } = useAccessToken();
   const [tracksInChart, setTracksInChart] = useState<any[]>([]);
   const [deviceID, setDeviceID] = useState<string>();
+  const [play, setPlay] = useState<boolean>(false);
+  const [trackPositionInMilli, setTrackPositionMilli] = useState<number>(0);
+  const progressedTracks = new Map<any, boolean>();
+  // const trackStack = new Stack<string>();
 
-  const play_snippet = (e: any, trackURI: string) => {
+  const play_snippet = async (e: any, trackURI: string) => {
     e.preventDefault();
-    axios.put(
-      `https://api.spotify.com/v1/me/player/play?device_id=${deviceID}`,
-      {
-        uris: [trackURI],
-        // offset: { uri: trackURI },
-        position_ms: 0,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+    // e.stopPropagation();
+    // console.log("Play Snippet function");
+    if (!progressedTracks.has(trackURI)) {
+      // checks if the current track is not in progression (track is being played for the first time)
+      progressedTracks.set(trackURI, true);
+      // add this track to the top of the stack as well
+    }
+    // else {
+    //   progressedTracks.set(trackURI, true); // checks if the current track is in progression (if the track was paused, and is now being resumed)
+    // }
+    try {
+      await axios.put(
+        `https://api.spotify.com/v1/me/player/play?device_id=${deviceID}`,
+        {
+          uris: [trackURI],
+          // offset: { uri: trackURI },
+          position_ms:
+            trackPositionInMilli > 0 && progressedTracks.get(trackURI)
+              ? trackPositionInMilli
+              : 0,
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      setPlay(!play);
+    } catch (error) {
+      console.log("Error playing track: ", error);
+    }
+  };
+
+  const pause_snippet = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      await axios.put(
+        `https://api.spotify.com/v1/me/player/pause?device_id=${deviceID}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      setPlay(!play);
+
+      const currentTrackPosition = await axios.get(
+        "https://api.spotify.com/v1/me/player",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      console.log(currentTrackPosition);
+      setTrackPositionMilli(currentTrackPosition.data.progress_ms);
+    } catch (error) {
+      console.log("Error pausing played track: ", error);
+    }
   };
 
   const getArtistNames = (artists: any[]): string => {
@@ -119,7 +178,8 @@ const GenrePlaylist = () => {
 
   useEffect(() => {
     console.log("Tracks that will be in the chart: ", tracksInChart);
-  }, [tracksInChart]);
+    console.log("Play value: ", play);
+  }, [tracksInChart, play]);
 
   return (
     <div className="genre-playlist-container">
@@ -142,6 +202,9 @@ const GenrePlaylist = () => {
           <thead>
             <tr>
               <th>
+                <div className="genre-playlist-text">#</div>
+              </th>
+              <th>
                 <div className="genre-playlist-text">Album Cover</div>
               </th>
               <th>
@@ -160,13 +223,43 @@ const GenrePlaylist = () => {
           </thead>
           <tbody>
             {tracksInChart.map((track: any, index: number) => (
-              <tr
-                className="genre-playlist-row"
-                key={index}
-                onClick={(e) => play_snippet(e, track.trackURI)}
-              >
+              <tr className="genre-playlist-row" key={index}>
                 <td>
-                  <img src={track.album.images[2].url} />
+                  <div className="track-number-play-button-container">
+                    {!play ? (
+                      <div
+                        className="play-button"
+                        onClick={(e) => play_snippet(e, track.trackURI)}
+                      >
+                        <FontAwesomeIcon
+                          className="play-button-icon"
+                          icon={faPlay}
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className="play-button"
+                        onClick={(e) => pause_snippet(e)}
+                      >
+                        <FontAwesomeIcon
+                          className="pause-button-icon"
+                          icon={faPause}
+                        />
+                      </div>
+                    )}
+
+                    <div className="track-number">
+                      <div className="genre-playlist-text">{index + 1}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div className="album-image-container">
+                    <img
+                      className="album-image"
+                      src={track.album.images[2].url}
+                    />
+                  </div>
                 </td>
                 <td className="genre-playlist-text">{track.trackName}</td>
                 <td className="genre-playlist-text">

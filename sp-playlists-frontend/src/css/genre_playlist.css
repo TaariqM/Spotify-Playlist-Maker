@@ -26,6 +26,7 @@
 .genre-playlist-text {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: rgb(156 163 175);
+  /* padding: 10px; */
 }
 
 .genre-playlist-container-img-title-container-title {
@@ -52,4 +53,71 @@ td {
 
 .genre-playlist-row:hover {
   background-color: rgb(71, 71, 71);
+}
+
+.album-image-container {
+  position: relative;
+  display: inline-block; /* Ensure proper positioning within table cell */
+  vertical-align: middle;
+}
+
+.track-number-play-button-container {
+  position: relative;
+  display: inline-block; /* Ensure proper positioning within table cell */
+}
+
+.track-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 1; /*Initially shows the track number*/
+  transition: opacity 0.3s ease;
+  z-index: 1;
+  padding-left: 16px;
+}
+
+.genre-playlist-row:hover .track-number {
+  opacity: 0; /*Hide the track number when row is hovered*/
+}
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0; /*Initially hide the play button*/
+  transition: opacity 0.3s ease;
+  z-index: 10000;
+  padding-left: 16px;
+}
+
+.genre-playlist-row:hover .play-button {
+  opacity: 1;
+}
+
+/* .album-image-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0; /*Initially hide the play button
+  transition: opacity 0.3s ease;
+  z-index: 1;
+} */
+
+/* .album-image-container:hover .album-image-play-button {
+  opacity: 1;
+} */
+
+.album-image {
+  border-radius: 8px;
+}
+
+.play-button-icon {
+  height: 24px;
+  width: 24px;
+  object-fit: cover;
+  color: #ddd;
+  z-index: 1000;
 }
