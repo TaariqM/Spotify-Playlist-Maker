@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useAccessToken } from "../contexts/AccessTokenContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
+import Stack from "../data_structures/Stack";
 import mapToArrayConverter from "../functions/MapToArrayConverter";
 import millisecondsToMinutesAndSeconds from "../functions/MillisecondsToMinutesAndSeconds";
 import "../css/genre_playlist.css";
@@ -23,6 +24,7 @@ const GenrePlaylist = () => {
   const [play, setPlay] = useState<boolean>(false);
   const [trackPositionInMilli, setTrackPositionMilli] = useState<number>(0);
   const progressedTracks = new Map<any, boolean>();
+  const songStack = new Stack<string>();
   // const trackStack = new Stack<string>();
 
   const play_snippet = async (e: any, trackURI: string) => {
@@ -31,8 +33,10 @@ const GenrePlaylist = () => {
     // console.log("Play Snippet function");
     if (!progressedTracks.has(trackURI)) {
       // checks if the current track is not in progression (track is being played for the first time)
+      progressedTracks.set(trackURI, false);
+      songStack.push(trackURI); // add this track to the top of the stack as well
+    } else {
       progressedTracks.set(trackURI, true);
-      // add this track to the top of the stack as well
     }
     // else {
     //   progressedTracks.set(trackURI, true); // checks if the current track is in progression (if the track was paused, and is now being resumed)
@@ -44,7 +48,9 @@ const GenrePlaylist = () => {
           uris: [trackURI],
           // offset: { uri: trackURI },
           position_ms:
-            trackPositionInMilli > 0 && progressedTracks.get(trackURI)
+            trackPositionInMilli > 0 &&
+            progressedTracks.get(trackURI) &&
+            songStack.peek() === trackURI
               ? trackPositionInMilli
               : 0,
         },
@@ -57,6 +63,14 @@ const GenrePlaylist = () => {
       );
 
       setPlay(!play);
+
+      while (songStack.peek() != trackURI && songStack.size() != 0) {
+        songStack.pop();
+      }
+
+      if (songStack.size() == 0) {
+        songStack.push(trackURI);
+      }
     } catch (error) {
       console.log("Error playing track: ", error);
     }
