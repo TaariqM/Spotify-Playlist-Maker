@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAccessToken } from "../contexts/AccessTokenContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
@@ -14,43 +14,88 @@ const GenrePlaylist = () => {
   const { genre, songs, image, coverArtist } = location.state;
 
   // console.log("Name of Genre", genre);
-  console.log("Songs in the genre: ", songs);
+  // console.log("Songs in the genre: ", songs);
   // console.log("Playlist Image: ", image);
   // console.log("Cover Artist: ", coverArtist);
 
   const { accessToken } = useAccessToken();
   const [tracksInChart, setTracksInChart] = useState<any[]>([]);
   const [deviceID, setDeviceID] = useState<string>();
-  const [play, setPlay] = useState<boolean>(false);
+  // const [play, setPlay] = useState<boolean>(false);
+  const [playState, setPlayState] = useState<boolean[]>(
+    new Array(tracksInChart.length).fill(false)
+  );
   const [trackPositionInMilli, setTrackPositionMilli] = useState<number>(0);
-  const progressedTracks = new Map<any, boolean>();
-  const songStack = new Stack<string>();
-  // const trackStack = new Stack<string>();
+  const myMapRef = useRef(new Map<any, boolean>());
+  const myStackRef = useRef(new Stack<string>());
 
-  const play_snippet = async (e: any, trackURI: string) => {
+  const addToMap = (key: any, value: boolean) => {
+    myMapRef.current.set(key, value);
+  };
+
+  const addToStack = (item: string) => {
+    myStackRef.current.push(item);
+  };
+
+  const retrieveFromMap = (key: any): boolean | undefined => {
+    return myMapRef.current.get(key);
+  };
+
+  const existsInMap = (key: any): boolean => {
+    return myMapRef.current.has(key);
+  };
+
+  const retrieveTopOfStack = (): string | undefined => {
+    return myStackRef.current.peek();
+  };
+
+  const sizeOfStack = (): number => {
+    return myStackRef.current.size();
+  };
+
+  const popFromStack = (): string | undefined => {
+    return myStackRef.current.pop();
+  };
+
+  const togglePlayState = (index: number) => {
+    // playState.map((state: boolean, i: number) => {
+    //   // if the playState array contains an element that is set to true, change it false
+    //   if (state) {
+    //     playState[i] = !playState[i];
+    //   }
+    // });
+    const newPlayStateArray = [...playState];
+    newPlayStateArray[index] = !newPlayStateArray[index];
+    setPlayState(newPlayStateArray);
+  };
+
+  const play_snippet = (e: any, trackURI: string, index: number) => {
     e.preventDefault();
-    // e.stopPropagation();
-    // console.log("Play Snippet function");
-    if (!progressedTracks.has(trackURI)) {
+
+    if (!existsInMap(trackURI)) {
       // checks if the current track is not in progression (track is being played for the first time)
-      progressedTracks.set(trackURI, false);
-      songStack.push(trackURI); // add this track to the top of the stack as well
+      addToMap(trackURI, false);
+      addToStack(trackURI);
+      console.log("Key-Value Pairs in Map: ", myMapRef);
+      console.log("Items in Stack: ", myStackRef);
     } else {
-      progressedTracks.set(trackURI, true);
+      // if the current track has been played before
+      console.log("Track URI already exists in Map");
+      console.log("Value before being changed: ", retrieveFromMap(trackURI));
+      addToMap(trackURI, true);
+      console.log("Value after being changed: ", retrieveFromMap(trackURI));
     }
-    // else {
-    //   progressedTracks.set(trackURI, true); // checks if the current track is in progression (if the track was paused, and is now being resumed)
-    // }
     try {
-      await axios.put(
+      console.log("Track URI: ", trackURI);
+      console.log("Track URI at the top of the Stack: ", retrieveTopOfStack());
+      axios.put(
         `https://api.spotify.com/v1/me/player/play?device_id=${deviceID}`,
         {
           uris: [trackURI],
-          // offset: { uri: trackURI },
           position_ms:
             trackPositionInMilli > 0 &&
-            progressedTracks.get(trackURI) &&
-            songStack.peek() === trackURI
+            retrieveFromMap(trackURI) &&
+            retrieveTopOfStack() === trackURI
               ? trackPositionInMilli
               : 0,
         },
@@ -62,21 +107,23 @@ const GenrePlaylist = () => {
         }
       );
 
-      setPlay(!play);
+      // setPlay(!play);
 
-      while (songStack.peek() != trackURI && songStack.size() != 0) {
-        songStack.pop();
+      togglePlayState(index);
+
+      while (retrieveTopOfStack() != trackURI && sizeOfStack() != 0) {
+        popFromStack();
       }
 
-      if (songStack.size() == 0) {
-        songStack.push(trackURI);
+      if (sizeOfStack() === 0) {
+        addToStack(trackURI);
       }
     } catch (error) {
       console.log("Error playing track: ", error);
     }
   };
 
-  const pause_snippet = async (e: any) => {
+  const pause_snippet = async (e: any, index: number) => {
     e.preventDefault();
 
     try {
@@ -91,7 +138,9 @@ const GenrePlaylist = () => {
         }
       );
 
-      setPlay(!play);
+      //setPlay(!play);
+
+      togglePlayState(index);
 
       const currentTrackPosition = await axios.get(
         "https://api.spotify.com/v1/me/player",
@@ -177,7 +226,7 @@ const GenrePlaylist = () => {
             },
           }
         );
-        console.log("List of Devices for User: ", userDevices.data.devices);
+        // console.log("List of Devices for User: ", userDevices.data.devices);
         setDeviceID(userDevices.data.devices[0].id);
       } catch (error) {
         console.error("Error fetching devices: ", error);
@@ -185,15 +234,15 @@ const GenrePlaylist = () => {
     };
 
     const noDuplicateSongs: any[] = removeDuplicateSongs(songs);
-    console.log("Songs with no Duplicates", noDuplicateSongs);
+    // console.log("Songs with no Duplicates", noDuplicateSongs);
     getSongData(noDuplicateSongs);
     getDevice();
   }, []);
 
-  useEffect(() => {
-    console.log("Tracks that will be in the chart: ", tracksInChart);
-    console.log("Play value: ", play);
-  }, [tracksInChart, play]);
+  // useEffect(() => {
+  //   console.log("Tracks that will be in the chart: ", tracksInChart);
+  //   console.log("Play value: ", play);
+  // }, [tracksInChart, play]);
 
   return (
     <div className="genre-playlist-container">
@@ -240,30 +289,38 @@ const GenrePlaylist = () => {
               <tr className="genre-playlist-row" key={index}>
                 <td>
                   <div className="track-number-play-button-container">
-                    {!play ? (
-                      <div
-                        className="play-button"
-                        onClick={(e) => play_snippet(e, track.trackURI)}
-                      >
+                    <div
+                      className="play-button"
+                      onClick={
+                        !playState[index]
+                          ? (e) => play_snippet(e, track.trackURI, index)
+                          : (e) => pause_snippet(e, index)
+                      }
+                    >
+                      {!playState[index] ? (
                         <FontAwesomeIcon
                           className="play-button-icon"
                           icon={faPlay}
                         />
-                      </div>
-                    ) : (
-                      <div
-                        className="play-button"
-                        onClick={(e) => pause_snippet(e)}
-                      >
+                      ) : (
                         <FontAwesomeIcon
                           className="pause-button-icon"
                           icon={faPause}
                         />
-                      </div>
-                    )}
+                      )}
+                    </div>
 
                     <div className="track-number">
-                      <div className="genre-playlist-text">{index + 1}</div>
+                      <div className="genre-playlist-text">
+                        {!playState[index] ? (
+                          index + 1
+                        ) : (
+                          <FontAwesomeIcon
+                            className="pause-button-icon"
+                            icon={faPause}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </td>
