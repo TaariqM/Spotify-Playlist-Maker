@@ -57,16 +57,30 @@ const GenrePlaylist = () => {
     return myStackRef.current.pop();
   };
 
+  // Sets whether the play or pause button icons will appear or not
   const togglePlayState = (index: number) => {
-    // playState.map((state: boolean, i: number) => {
-    //   // if the playState array contains an element that is set to true, change it false
-    //   if (state) {
-    //     playState[i] = !playState[i];
-    //   }
-    // });
+    let pauseIndex;
+    playState.map((state: boolean, i: number) => {
+      // if the playState array contains an element that is set to true, change it false
+      if (state) {
+        playState[i] = !playState[i];
+        pauseIndex = i;
+      }
+    });
+
+    // 2 conditions need to be handled.
+    // 1st Condition: User plays a song while all other songs are paused/stopped
+    // 2nd Condition: User plays a song while another song is playing
     const newPlayStateArray = [...playState];
-    newPlayStateArray[index] = !newPlayStateArray[index];
-    setPlayState(newPlayStateArray);
+
+    if (pauseIndex != undefined && pauseIndex === index) {
+      // this will check if the song that was just playing, has been paused/stopped, by comparing the two indices.
+      // If this is true, then there is no need to change the boolean value in the 'playState' array, as it has been taken care of in the above map() function
+      setPlayState(newPlayStateArray);
+    } else {
+      newPlayStateArray[index] = !newPlayStateArray[index];
+      setPlayState(newPlayStateArray);
+    }
   };
 
   const play_snippet = (e: any, trackURI: string, index: number) => {
@@ -156,6 +170,26 @@ const GenrePlaylist = () => {
       setTrackPositionMilli(currentTrackPosition.data.progress_ms);
     } catch (error) {
       console.log("Error pausing played track: ", error);
+    }
+  };
+
+  const getTrackPosition = async () => {
+    // let positionInMS = 0;
+    try {
+      const currentTrackPosition = await axios.get(
+        "https://api.spotify.com/v1/me/player",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      // positionInMS = currentTrackPosition.data.progress_ms;
+      setTrackPositionMilli(currentTrackPosition.data.progress_ms);
+    } catch (error) {
+      console.log("Error getting current track position");
     }
   };
 
