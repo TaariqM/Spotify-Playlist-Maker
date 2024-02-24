@@ -156,18 +156,19 @@ const GenrePlaylist = () => {
 
       togglePlayState(index);
 
-      const currentTrackPosition = await axios.get(
-        "https://api.spotify.com/v1/me/player",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      // const currentTrackPosition = await axios.get(
+      //   "https://api.spotify.com/v1/me/player",
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
 
-      console.log(currentTrackPosition);
-      setTrackPositionMilli(currentTrackPosition.data.progress_ms);
+      // console.log(currentTrackPosition);
+      // setTrackPositionMilli(currentTrackPosition.data.progress_ms);
+      getTrackPosition();
     } catch (error) {
       console.log("Error pausing played track: ", error);
     }
@@ -187,6 +188,7 @@ const GenrePlaylist = () => {
       );
 
       // positionInMS = currentTrackPosition.data.progress_ms;
+      console.log(currentTrackPosition);
       setTrackPositionMilli(currentTrackPosition.data.progress_ms);
     } catch (error) {
       console.log("Error getting current track position");

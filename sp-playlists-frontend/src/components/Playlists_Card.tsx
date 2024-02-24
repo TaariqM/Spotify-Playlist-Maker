@@ -1,10 +1,3 @@
-// import {
-//   CCard,
-//   CCardImage,
-//   CCardBody,
-//   CCardTitle,
-//   CButton,
-// } from "@coreui/react";
 import { useNavigate } from "react-router-dom";
 import "../css/playlists_card.css";
 
@@ -32,16 +25,6 @@ const Playlists_Card = ({ music }: { music: any }) => {
   };
 
   return (
-    // <div className="card-container">
-    //   <CCard>
-    //     <CCardImage src={music[1][index].artistDataInfo.artistIMG.url} />
-    //     <CCardBody>
-    //       <CCardTitle>{music[0]}</CCardTitle>
-    //       <CButton>Go Somewhere</CButton>
-    //     </CCardBody>
-    //   </CCard>
-    // </div>
-
     <div className="card-container" onClick={handleOnClick}>
       <div className="card-container-pic-container">
         <img
@@ -52,10 +35,6 @@ const Playlists_Card = ({ music }: { music: any }) => {
 
       <div className="card-container-title-container">
         <h3>{music[0]}</h3>
-      </div>
-
-      <div className="card-container-btn-container">
-        <button className="card-container-btn-container-button">Play</button>
       </div>
     </div>
   );

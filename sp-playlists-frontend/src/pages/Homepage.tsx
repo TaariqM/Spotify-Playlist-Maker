@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAccessToken } from "../contexts/AccessTokenContext";
+import { useAuthorizationCode } from "../contexts/AuthorizationCodeContext";
 // import crypto from "crypto";
 import "../css/homepage.css";
 
@@ -12,7 +13,8 @@ const Homepage = () => {
     "user-read-private user-read-email user-library-read ugc-image-upload user-read-playback-state user-modify-playback-state";
   const authURL: string = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=${scope}`;
   const navigate = useNavigate();
-  const { setCode } = useAccessToken();
+  const { authorizationCode, getButtonText } = useAuthorizationCode();
+  // const { setCode } = useAccessToken();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -29,20 +31,25 @@ const Homepage = () => {
     const buttonText = authorizationCode
       ? "Continue with Spotify Playlists Generator"
       : "Login With Spotify";
-    if (buttonText === "Login With Spotify") {
-      window.location.href = authURL;
-    } else {
-      navigate(`/playlists/${authorizationCode}`);
-    }
+
+    getButtonText(buttonText);
+    // if (buttonText === "Login With Spotify") {
+    //   // window.location.href = authURL;
+    //   getButtonText();
+    // } else {
+    //   navigate(`/playlists/${authorizationCode}`);
+    // }
   };
 
-  const authorizationCode = codeParams.get("code");
+  // const authorizationCode = codeParams.get("code");
 
-  useEffect(() => {
-    if (authorizationCode) {
-      setCode(authorizationCode);
-    }
-  }, [authorizationCode, setCode]);
+  // getAuthorizationCode(codeParams.get("code"));
+
+  // useEffect(() => {
+  //   if (authorizationCode) {
+  //     setCode(authorizationCode);
+  //   }
+  // }, [authorizationCode, setCode]);
 
   console.log(authorizationCode);
   return (

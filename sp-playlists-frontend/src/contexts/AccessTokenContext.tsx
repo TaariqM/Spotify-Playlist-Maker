@@ -1,17 +1,18 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useAuthorizationCode } from "./AuthorizationCodeContext";
 import axios from "axios";
 
 interface AccessTokenContextProps {
   // children: ReactNode;
   accessToken: string | null;
-  authorizationCode: string | null;
-  setCode: (code: string | null) => void; // function to set the authorization code from the Homepage file
+  //authorizationCode: string | null;
+  //setCode: (code: string | null) => void; // function to set the authorization code from the Homepage file
 }
 
 const AccessTokenContext = createContext<AccessTokenContextProps>({
   accessToken: null,
-  authorizationCode: null,
-  setCode: () => {},
+  //authorizationCode: null,
+  //setCode: () => {},
 });
 
 export const AccessTokenProvider = ({ children }: { children: any }) => {
@@ -19,9 +20,10 @@ export const AccessTokenProvider = ({ children }: { children: any }) => {
   const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_REACT_APP_CLIENT_SECRET;
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [authorizationCode, setAuthorizationCode] = useState<string | null>(
-    null
-  );
+  const { authorizationCode } = useAuthorizationCode();
+  // const [authorizationCode, setAuthorizationCode] = useState<string | null>(
+  //   null
+  // );
 
   // setAuthorizationCode(codeParam.get("code"));
 
@@ -58,14 +60,17 @@ export const AccessTokenProvider = ({ children }: { children: any }) => {
     getAccessToken();
   }, [authorizationCode]);
 
-  const setCode = (code: string | null) => {
-    setAuthorizationCode(code);
-  };
+  // const setCode = (code: string | null) => {
+  //   setAuthorizationCode(code);
+  // };
 
   return (
-    <AccessTokenContext.Provider
-      value={{ accessToken, authorizationCode, setCode }}
-    >
+    // <AccessTokenContext.Provider
+    //   value={{ accessToken, authorizationCode, setCode }}
+    // >
+    //   {children}
+    // </AccessTokenContext.Provider>
+    <AccessTokenContext.Provider value={{ accessToken }}>
       {children}
     </AccessTokenContext.Provider>
   );

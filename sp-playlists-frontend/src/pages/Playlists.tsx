@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { usePlaylists } from "../contexts/PlaylistContext";
 import { useAccessToken } from "../contexts/AccessTokenContext";
 import axios from "axios";
 import genreToSongMatcher from "../functions/GenreToSongMatcher";
@@ -8,88 +9,92 @@ import "../css/playlists.css";
 
 const Playlists = () => {
   // const [accessToken, setAccessToken] = useState("");
-  const [songInfo, setSongInfo] = useState({
-    track: [],
-  });
+  // const [songInfo, setSongInfo] = useState({
+  //   track: [],
+  // });
 
   const { accessToken } = useAccessToken();
-
+  const { songInfo, getToken } = usePlaylists();
   // console.log(codeParam);
 
   const handleOnClick = async (e: any) => {
     e.preventDefault();
-    let savedSongs;
-    // console.log("Test");
-    try {
-      savedSongs = await axios.get(
-        "https://api.spotify.com/v1/me/tracks?limit=50",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      console.log("All User Saved Songs: ", savedSongs.data.items);
-      // setUserSavedSongs(savedSongs.data.items);
-      getAllArtists(savedSongs.data.items);
-    } catch (error) {
-      console.log("Error fetching saved songs: ", error);
-    }
+    // let savedSongs;
+    // // console.log("Test");
+    // try {
+    //   savedSongs = await axios.get(
+    //     "https://api.spotify.com/v1/me/tracks?limit=50",
+    //     {
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: `Bearer ${accessToken}`,
+    //       },
+    //     }
+    //   );
+    //   console.log("All User Saved Songs: ", savedSongs.data.items);
+    //   // setUserSavedSongs(savedSongs.data.items);
+    //   getAllArtists(savedSongs.data.items);
+    // } catch (error) {
+    //   console.log("Error fetching saved songs: ", error);
+    // }
+
+    getToken(accessToken);
+    // getSavedSongs(accessToken);
+    // setSongInfo(trackInfo);
   };
 
-  const getAllArtists = async (songs: any) => {
-    try {
-      // console.log("User Saved Songs From getAllArtists() Function: ", songs);
-      const updatedSongInfo = await Promise.all(
-        songs.map(async (song: any) => {
-          const artistsIds: string[] = [];
-          const artistsInfo = await Promise.all(
-            song.track.artists.map(async (artist: any) => {
-              artistsIds.push(artist.id);
-              const artistDetails = await axios.get(
-                `https://api.spotify.com/v1/artists/${artist.id}`,
-                {
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                  },
-                }
-              );
+  // const getAllArtists = async (songs: any) => {
+  //   try {
+  //     // console.log("User Saved Songs From getAllArtists() Function: ", songs);
+  //     const updatedSongInfo = await Promise.all(
+  //       songs.map(async (song: any) => {
+  //         const artistsIds: string[] = [];
+  //         const artistsInfo = await Promise.all(
+  //           song.track.artists.map(async (artist: any) => {
+  //             artistsIds.push(artist.id);
+  //             const artistDetails = await axios.get(
+  //               `https://api.spotify.com/v1/artists/${artist.id}`,
+  //               {
+  //                 headers: {
+  //                   "Content-Type": "application/json",
+  //                   Authorization: `Bearer ${accessToken}`,
+  //                 },
+  //               }
+  //             );
 
-              // console.log("Artist Details: ", artistDetails);
+  //             // console.log("Artist Details: ", artistDetails);
 
-              // Extract relevant artist info
-              const { id, name, images, genres } = artistDetails.data;
-              return { id, name, images, genres };
-            })
-          );
+  //             // Extract relevant artist info
+  //             const { id, name, images, genres } = artistDetails.data;
+  //             return { id, name, images, genres };
+  //           })
+  //         );
 
-          // console.log("Artists Info: ", artistsInfo);
+  //         // console.log("Artists Info: ", artistsInfo);
 
-          // Extract relevant track information here
-          const { id, name, uri } = song.track;
+  //         // Extract relevant track information here
+  //         const { id, name, uri } = song.track;
 
-          // Combine artist and track information
-          const trackWithArtists = {
-            id,
-            name,
-            uri,
-            artists: artistsInfo,
-          };
+  //         // Combine artist and track information
+  //         const trackWithArtists = {
+  //           id,
+  //           name,
+  //           uri,
+  //           artists: artistsInfo,
+  //         };
 
-          return trackWithArtists;
-        })
-      );
+  //         return trackWithArtists;
+  //       })
+  //     );
 
-      setSongInfo((prev: any) => ({
-        ...prev,
-        track: [...prev.track, ...updatedSongInfo],
-      }));
-    } catch (error) {
-      console.log("Error fetching artist info: ", error);
-    }
-  };
+  //     setSongInfo((prev: any) => ({
+  //       ...prev,
+  //       track: [...prev.track, ...updatedSongInfo],
+  //     }));
+  //   } catch (error) {
+  //     console.log("Error fetching artist info: ", error);
+  //   }
+  // };
 
   useEffect(() => {
     console.log("Song Info: ", songInfo);
