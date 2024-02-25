@@ -49,6 +49,7 @@ Below are the specific API endpoints that were used for this web application are
 * TypeScript
 * HTML 
 * CSS 
+* Icons - [Font Awesome](https://fontawesome.com/docs/web/use-with/react/)
 
 ### Deployment
-* Firebase
+* Webapp.io
