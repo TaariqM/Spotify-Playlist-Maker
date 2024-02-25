@@ -1,11 +1,9 @@
 import { createContext, useContext, useState, useEffect } from "react";
-// import { useAccessToken } from "./AccessTokenContext";
 import axios from "axios";
 
 interface PlaylistContextProps {
   songInfo: { track: any[] };
   getToken: (accessToken: string | null) => void;
-  // getSavedSongs: (accessToken: any) => void;
 }
 
 const PlaylistContext = createContext<PlaylistContextProps>({
@@ -18,36 +16,14 @@ export const PlaylistProvider = ({ children }: { children: any }) => {
     track: [],
   });
 
-  // const { accessToken } = useAccessToken();
   const [token, setToken] = useState<string | null>();
 
   const getToken = (accessToken: string | null) => {
     setToken(accessToken);
   };
 
-  // const getSavedSongs = async (accessToken: any) => {
-  //   let savedSongs;
-  //   try {
-  //     savedSongs = await axios.get(
-  //       "https://api.spotify.com/v1/me/tracks?limit=50",
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       }
-  //     );
-  //     console.log("All User Saved Songs: ", savedSongs.data.items);
-  //     // setUserSavedSongs(savedSongs.data.items);
-  //     getAllArtists(savedSongs.data.items, accessToken);
-  //   } catch (error) {
-  //     console.log("Error fetching saved songs: ", error);
-  //   }
-  // };
-
   useEffect(() => {
     let savedSongs;
-    // console.log("Test");
 
     const getSavedSongs = async () => {
       try {
@@ -60,8 +36,6 @@ export const PlaylistProvider = ({ children }: { children: any }) => {
             },
           }
         );
-        console.log("All User Saved Songs: ", savedSongs.data.items);
-        // setUserSavedSongs(savedSongs.data.items);
         getAllArtists(savedSongs.data.items);
       } catch (error) {
         console.log("Error fetching saved songs: ", error);
@@ -73,7 +47,6 @@ export const PlaylistProvider = ({ children }: { children: any }) => {
 
   const getAllArtists = async (songs: any) => {
     try {
-      // console.log("User Saved Songs From getAllArtists() Function: ", songs);
       const updatedTrackInfo = await Promise.all(
         songs.map(async (song: any) => {
           const artistsIds: string[] = [];
@@ -90,15 +63,11 @@ export const PlaylistProvider = ({ children }: { children: any }) => {
                 }
               );
 
-              // console.log("Artist Details: ", artistDetails);
-
               // Extract relevant artist info
               const { id, name, images, genres } = artistDetails.data;
               return { id, name, images, genres };
             })
           );
-
-          // console.log("Artists Info: ", artistsInfo);
 
           // Extract relevant track information here
           const { id, name, uri } = song.track;

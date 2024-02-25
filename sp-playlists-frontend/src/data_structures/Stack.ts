@@ -6,10 +6,6 @@ class Stack<T> implements IStack<T> {
   private storage: T[] = [];
   private capacity: number;
 
-  // constructor() {
-  //   this.capacity = Infinity;
-  // }
-
   constructor();
   constructor(initialStack: Stack<T>);
   constructor(initialItems: T[]);
@@ -19,7 +15,7 @@ class Stack<T> implements IStack<T> {
       // If an array is provided, initialize the stack with its elements
       this.storage = arg.slice();
     } else if (arg instanceof Stack) {
-      //If a Stack object is provided, initialize the stacck with its elements
+      //If a Stack object is provided, initialize the stack with its elements
       const initialStack = arg as Stack<T>;
       this.storage = initialStack.toArray();
     } else {

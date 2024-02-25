@@ -16,7 +16,6 @@ function genreToSongMatcher(songInfo: any): any {
           artistID: artist.id,
           artistName: artist.name,
           artistIMG: imageArray,
-          // artistIMG: artist.images[2],
         };
 
         const trackData = {

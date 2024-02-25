@@ -3,14 +3,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 interface AuthorizationCodeContextProps {
   authorizationCode: string | null | undefined;
-  // getAuthorizationCode: (authCode: string | null) => void;
   getButtonText: (text: string) => void;
 }
 
 const AuthorizationCodeContext = createContext<AuthorizationCodeContextProps>({
   authorizationCode: null,
   getButtonText: () => {},
-  // getAuthorizationCode: () => {},
 });
 
 export const AuthorizationCodeProvider = ({ children }: { children: any }) => {
@@ -30,10 +28,6 @@ export const AuthorizationCodeProvider = ({ children }: { children: any }) => {
     }
   );
 
-  //   const getAuthorizationCode = (authCode: string | null) => {
-  //     setAuthorizationCode(authCode);
-  //   };
-
   const getButtonText = (text: string) => {
     if (text === "Login With Spotify") {
       window.location.href = authURL;
@@ -42,18 +36,9 @@ export const AuthorizationCodeProvider = ({ children }: { children: any }) => {
     }
   };
 
-  // const code = codeParams.get("code");
-
   useEffect(() => {
-    // setAuthorizationCode(code);
     setAuthorizationCode(codeParams.get("code"));
     localStorage.setItem("authorizationCode", codeParams.get("code") || "");
-    // const getAuthorizationCode = (authCode: string | null) => {
-    //   setAuthorizationCode(authCode);
-    // };
-
-    // getAuthorizationCode(code);
-    // console.log("Authorization Code: ", authorizationCode);
   }, [codeParams]);
 
   return (

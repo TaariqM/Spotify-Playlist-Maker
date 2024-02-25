@@ -6,12 +6,9 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  /* height: 100%; */
   padding-top: 40px;
   padding-left: 40px;
   padding-right: 40px;
-  /* background-color: rgb(36, 36, 36); */
-  /* overflow: auto; */
 }
 
 .genre-playlist-container-img-title-container {
@@ -29,7 +26,6 @@ body {
 .genre-playlist-text {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: rgb(156 163 175);
-  /* padding: 10px; */
 }
 
 .genre-playlist-container-img-title-container-title {
@@ -98,20 +94,6 @@ td {
 .genre-playlist-row:hover .play-button {
   opacity: 1;
 }
-
-/* .album-image-play-button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0; /*Initially hide the play button
-  transition: opacity 0.3s ease;
-  z-index: 1;
-} */
-
-/* .album-image-container:hover .album-image-play-button {
-  opacity: 1;
-} */
 
 .album-image {
   border-radius: 8px;

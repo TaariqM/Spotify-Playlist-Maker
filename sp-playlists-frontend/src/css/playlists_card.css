@@ -9,24 +9,11 @@
   margin: 0 30px 20px 30px;
   border-radius: 8px;
   background-color: rgb(59, 58, 58);
-  /* background-color: rgb(17 24 39); */
-  /* color: rgb(17 24 39); */
 }
 
 .card-container:hover {
   background-color: rgb(71, 71, 71);
-  /* border-width: 0.1px;
-  border-color: rgb(161, 159, 159);
-  border-style: solid; */
 }
-
-/* object-fit: contain; This was originally inside the 'img' tag. Removed it in order to comment out the 'img' tag*/
-
-/* img {
-  height: 160px;
-  width: 160px;
-  border-radius: 8px;
-} */
 
 .card-container-pic-container-pic {
   height: 160px;

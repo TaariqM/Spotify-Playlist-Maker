@@ -13,15 +13,9 @@ const GenrePlaylist = () => {
   const location = useLocation();
   const { genre, songs, image, coverArtist } = location.state;
 
-  // console.log("Name of Genre", genre);
-  // console.log("Songs in the genre: ", songs);
-  // console.log("Playlist Image: ", image);
-  // console.log("Cover Artist: ", coverArtist);
-
   const { accessToken } = useAccessToken();
   const [tracksInChart, setTracksInChart] = useState<any[]>([]);
   const [deviceID, setDeviceID] = useState<string>();
-  // const [play, setPlay] = useState<boolean>(false);
   const [playState, setPlayState] = useState<boolean[]>(
     new Array(tracksInChart.length).fill(false)
   );
@@ -90,18 +84,11 @@ const GenrePlaylist = () => {
       // checks if the current track is not in progression (track is being played for the first time)
       addToMap(trackURI, false);
       addToStack(trackURI);
-      console.log("Key-Value Pairs in Map: ", myMapRef);
-      console.log("Items in Stack: ", myStackRef);
     } else {
       // if the current track has been played before
-      console.log("Track URI already exists in Map");
-      console.log("Value before being changed: ", retrieveFromMap(trackURI));
       addToMap(trackURI, true);
-      console.log("Value after being changed: ", retrieveFromMap(trackURI));
     }
     try {
-      console.log("Track URI: ", trackURI);
-      console.log("Track URI at the top of the Stack: ", retrieveTopOfStack());
       axios.put(
         `https://api.spotify.com/v1/me/player/play?device_id=${deviceID}`,
         {
@@ -120,8 +107,6 @@ const GenrePlaylist = () => {
           },
         }
       );
-
-      // setPlay(!play);
 
       togglePlayState(index);
 
@@ -152,22 +137,7 @@ const GenrePlaylist = () => {
         }
       );
 
-      //setPlay(!play);
-
       togglePlayState(index);
-
-      // const currentTrackPosition = await axios.get(
-      //   "https://api.spotify.com/v1/me/player",
-      //   {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
-
-      // console.log(currentTrackPosition);
-      // setTrackPositionMilli(currentTrackPosition.data.progress_ms);
       getTrackPosition();
     } catch (error) {
       console.log("Error pausing played track: ", error);
@@ -175,7 +145,6 @@ const GenrePlaylist = () => {
   };
 
   const getTrackPosition = async () => {
-    // let positionInMS = 0;
     try {
       const currentTrackPosition = await axios.get(
         "https://api.spotify.com/v1/me/player",
@@ -187,8 +156,6 @@ const GenrePlaylist = () => {
         }
       );
 
-      // positionInMS = currentTrackPosition.data.progress_ms;
-      console.log(currentTrackPosition);
       setTrackPositionMilli(currentTrackPosition.data.progress_ms);
     } catch (error) {
       console.log("Error getting current track position");
@@ -262,7 +229,6 @@ const GenrePlaylist = () => {
             },
           }
         );
-        // console.log("List of Devices for User: ", userDevices.data.devices);
         setDeviceID(userDevices.data.devices[0].id);
       } catch (error) {
         console.error("Error fetching devices: ", error);
@@ -270,15 +236,9 @@ const GenrePlaylist = () => {
     };
 
     const noDuplicateSongs: any[] = removeDuplicateSongs(songs);
-    // console.log("Songs with no Duplicates", noDuplicateSongs);
     getSongData(noDuplicateSongs);
     getDevice();
   }, []);
-
-  // useEffect(() => {
-  //   console.log("Tracks that will be in the chart: ", tracksInChart);
-  //   console.log("Play value: ", play);
-  // }, [tracksInChart, play]);
 
   return (
     <div className="genre-playlist-container">
