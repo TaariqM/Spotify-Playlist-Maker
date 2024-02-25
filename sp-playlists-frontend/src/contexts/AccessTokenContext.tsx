@@ -11,7 +11,7 @@ const AccessTokenContext = createContext<AccessTokenContextProps>({
 });
 
 export const AccessTokenProvider = ({ children }: { children: any }) => {
-  const redirectURI: string = "http://localhost:5173/";
+  const redirectURI: string = "https://playlists-generator.web.app/";
   const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_REACT_APP_CLIENT_SECRET;
   const [accessToken, setAccessToken] = useState<string | null>(null);

@@ -5,7 +5,8 @@ import "../css/homepage.css";
 
 const Homepage = () => {
   const clientID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
-  const redirectURI: string = "http://localhost:5173/";
+  // const redirectURI: string = "http://localhost:5173/";
+  const redirectURI: string = "https://playlists-generator.web.app/";
   const scope: string =
     "user-read-private user-read-email user-library-read ugc-image-upload user-read-playback-state user-modify-playback-state";
   const authURL: string = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=${scope}`;
