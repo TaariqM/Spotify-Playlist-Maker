@@ -25,7 +25,7 @@ This web application utilizes Spotify's Web API. This API allows this web applic
 Below are the specific API endpoints that were used for this web application are.
 
 | HTTP Request Method | Endpoints | Action | Optional Parameters |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | GET | /me/player/devices | returns a Spotify users connected devices | N/A |
 | GET | /tracks/{id} | returns Spotify's information about a single song, identified by its unique ```id``` | N/A |
 | GET | /me/player | returns the users current playback state, which includes the current progress of a song or episode, and the id of the current device | N/A |
